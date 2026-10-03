@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+}
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  username     String    @unique
+  name         String
+  passwordHash String
+  bio          String    @default("")
+  location     String    @default("")
+  website      String    @default("")
+  avatarUrl    String    @default("")
+  color        String    @default("#dcece2")
+  isGuest      Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  posts        Post[]
+  comments     Comment[]
+  likes        Like[]
+  bookmarks    Bookmark[]
+  following    Follow[]  @relation("Follower")
+  followers    Follow[]  @relation("Following")
+}
+model Post {
+  id        String   @id @default(cuid())
+  content   String
+  imageUrl  String   @default("")
+  imageAlt  String   @default("")
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comments  Comment[]
+  likes     Like[]
+  bookmarks Bookmark[]
+  @@index([authorId, createdAt])
+  @@index([createdAt])
+}
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@index([postId, createdAt])
+}
+model Like {
+  userId String
+  postId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@id([userId, postId])
+  @@index([postId])
+}
+model Bookmark {
+  userId String
+  postId String
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@id([userId, postId])
+  @@index([postId])
+}
+enum FollowStatus {
+  PENDING
+  ACCEPTED
+}
+model Follow {
+  followerId  String
+  followingId String
+  follower    User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  status      FollowStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  @@id([followerId, followingId])
+  @@index([followingId, status])
+}

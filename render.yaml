@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: odinbook
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm run db:migrate && npm run db:seed && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: ALLOW_GUEST
+        value: 'true'
+      - key: DATABASE_URL
+        fromDatabase:
+          name: odinbook-db
+          property: connectionString
+databases:
+  - name: odinbook-db
+    plan: free
+    databaseName: odinbook
+    user: odinbook
+    ipAllowList: []

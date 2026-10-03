@@ -1,0 +1,53 @@
+{
+  "name": "odinbook",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A thoughtful social space for builders. Express, Passport, Prisma, and PostgreSQL.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node scripts/local.js",
+    "start": "node src/server.js",
+    "setup": "node scripts/setup.js",
+    "build": "prisma generate && node scripts/build.js",
+    "build:demo": "node scripts/build.js --demo",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "node seeds.js",
+    "test": "node --test --test-concurrency=1 tests/api.test.js",
+    "test:ui": "playwright test",
+    "check": "node scripts/check.js",
+    "test:demo": "playwright test --config playwright.demo.config.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "connect-pg-simple": "^10.0.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.16.3",
+    "prisma": "7.10.0",
+    "zod": "^4.3.6"
+  },
+  "overrides": {
+    "deepmerge-ts": "8.0.2",
+    "mysql2": "3.24.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "1.58.2",
+    "embedded-postgres": "17.9.0-beta.16",
+    "prettier": "^3.9.9",
+    "supertest": "^7.2.2"
+  }
+}
